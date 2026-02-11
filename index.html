@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> | O Próximo Nível</title>
+  <title>Unreal Streamings</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -14,6 +14,7 @@
       --dark-bg: #0f0f0f;
       --card-light: rgba(255, 255, 255, 0.8);
       --card-dark: rgba(30, 30, 30, 0.8);
+      --neon-glow: #25D366;
     }
 
     body {
@@ -64,6 +65,7 @@
       width: 100%;
       height: 450px;
       overflow: hidden;
+      margin-top: 80px; /* Ajuste para não ficar atrás da navbar fixa */
     }
     .slide {
       position: absolute;
@@ -159,7 +161,7 @@
     .badge.promo { background: linear-gradient(45deg, #e91e63, #9c27b0); color: white; }
     .badge.new { background: linear-gradient(45deg, #2196f3, #00bcd4); color: white; }
 
-    /* Preço e Botão */
+    /* Preço e Botão com efeito Neon */
     .price {
       font-size: 1.8rem;
       font-weight: 800;
@@ -182,11 +184,30 @@
       font-weight: 700;
       border-radius: 12px;
       transition: 0.5s;
-      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+      animation: neonPulse 2s infinite;
     }
+
+    @keyframes neonPulse {
+      0% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.4), 0 0 10px rgba(76, 175, 80, 0.2); }
+      50% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8), 0 0 30px rgba(76, 175, 80, 0.4); }
+      100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.4), 0 0 10px rgba(76, 175, 80, 0.2); }
+    }
+
     .btn:hover {
       background-position: right center;
       transform: scale(1.02);
+    }
+
+    /* Efeito Piscando/Oscilando para links WhatsApp */
+    .blink-text {
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     /* Contador e Urgência */
@@ -245,9 +266,17 @@
       position: fixed; left: 20px; bottom: 20px;
       background: #25D366; color: white; padding: 15px 25px;
       border-radius: 50px; text-decoration: none; font-weight: 700;
-      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); z-index: 1000;
+      box-shadow: 0 0 15px rgba(37, 211, 102, 0.6); z-index: 1000;
       display: flex; align-items: center; gap: 10px;
+      animation: neonPulseGreen 2s infinite, blink 2s infinite;
     }
+
+    @keyframes neonPulseGreen {
+      0% { box-shadow: 0 0 5px rgba(37, 211, 102, 0.4); }
+      50% { box-shadow: 0 0 20px rgba(37, 211, 102, 0.8); }
+      100% { box-shadow: 0 0 5px rgba(37, 211, 102, 0.4); }
+    }
+
     #darkModeToggle {
       position: fixed; top: 70px; right: 20px;
       background: var(--accent); color: white; border: none;
@@ -287,7 +316,7 @@
         <img src="46aa4f435321758d3ce2e84c78f2529c.jpg" alt="HBO">
         <h2>HBO MAX PLATINUM</h2>
         <div class="price"><span>R$</span> 9,99</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20assinar%20o%20HBO%20MAX%20PLATINUM." class="btn" target="_blank">ASSINAR AGORA</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20assinar%20o%20HBO%20MAX%20PLATINUM." class="btn blink-text" target="_blank">ASSINAR AGORA</a>
         <p class="live-viewers"><i class="fas fa-eye"></i> 14 pessoas vendo agora</p>
       </div>
 
@@ -297,7 +326,7 @@
         <h2>DISNEY PREMIUM</h2>
         <div id="countdown">Oferta expira em: --:--:--</div>
         <div class="price"><span>R$</span> 10,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20aproveitar%20a%20promoção%20do%20DISNEY%20PREMIUM." class="btn" target="_blank">APROVEITAR OFERTA</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20aproveitar%20a%20promoção%20do%20DISNEY%20PREMIUM." class="btn blink-text" target="_blank">APROVEITAR OFERTA</a>
         <p class="live-viewers"><i class="fas fa-eye"></i> 8 pessoas vendo agora</p>
       </div>
 
@@ -306,7 +335,7 @@
         <img src="914ab4f5390df5b619fc7b9398212673.jpg" alt="Paramount">
         <h2>PARAMOUNT+</h2>
         <div class="price"><span>R$</span> 8,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20assinar%20o%20PARAMOUNT+." class="btn" target="_blank">ASSINAR AGORA</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20assinar%20o%20PARAMOUNT+." class="btn blink-text" target="_blank">ASSINAR AGORA</a>
       </div>
 
       <div class="product">
@@ -314,7 +343,7 @@
         <img src="6021f45f8dc894ca33ba98f85dc14e08.jpg" alt="Youtube">
         <h2>YOUTUBE PREMIUM 3 MESES</h2>
         <div class="price"><span>R$</span> 15,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Tenho%20interesse%20no%20YOUTUBE%20PREMIUM%20de%203%20meses." class="btn" target="_blank">ASSINAR AGORA</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Tenho%20interesse%20no%20YOUTUBE%20PREMIUM%20de%203%20meses." class="btn blink-text" target="_blank">ASSINAR AGORA</a>
       </div>
     </div>
   </div>
