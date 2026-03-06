@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loja Unreal</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    :root {
+    :root{
       --primary: #4CAF50;
       --secondary: #2e7d32;
       --accent: #007BFF;
       --dark-bg: #0f0f0f;
-      --card-light: rgba(255, 255, 255, 0.8);
-      --card-dark: rgba(30, 30, 30, 0.8);
+      --card-light: rgba(255, 255, 255, 0.86);
+      --card-dark: rgba(30, 30, 30, 0.86);
       --neon-glow: #25D366;
+
+      --topbar-h: 42px;
+      --nav-h: 56px;
+
+      --radius-xl: 18px;
+      --shadow-soft: 0 10px 30px rgba(0,0,0,.12);
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Montserrat', sans-serif;
@@ -23,7 +35,7 @@
       padding: 0;
       background: #f0f2f5;
       color: #1a1a1a;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background .35s ease, color .35s ease;
       overflow-x: hidden;
     }
 
@@ -32,31 +44,167 @@
       color: #ffffff;
     }
 
-    /* Navbar Moderna */
-    nav {
+    /* Barra de progresso no topo */
+    .scroll-progress {
       position: fixed;
       top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      z-index: 5000;
+      transition: width .1s linear;
+    }
+
+    /* Topbar (aviso) */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 15px 0;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 12px;
+      z-index: 3000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    body.dark-mode .topbar {
+      background: rgba(15,15,15,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #fff;
+    }
+    .topbar .dot {
+      width: 6px; height: 6px; border-radius: 999px; background: var(--primary);
+      box-shadow: 0 0 0 6px rgba(76,175,80,0.15);
+    }
+    .topbar .close-topbar {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      opacity: 0.75;
+    }
+    .topbar .close-topbar:hover { opacity: 1; background: rgba(0,0,0,0.06); }
+    body.dark-mode .topbar .close-topbar:hover { background: rgba(255,255,255,0.08); }
+
+    /* Navbar Moderna (agora sem “vazio”) */
+    nav {
+      position: fixed;
+      top: var(--topbar-h);
+      width: 100%;
+      height: var(--nav-h);
       z-index: 2000;
-      transition: 0.4s;
-      text-align: center;
+      transition: 0.35s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
       background: transparent;
     }
+
     nav.scrolled {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.10);
     }
     body.dark-mode nav.scrolled {
-      background: rgba(15, 15, 15, 0.9);
+      background: rgba(15, 15, 15, 0.92);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.35);
     }
-    nav h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      letter-spacing: 2px;
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(76,175,80,0.25);
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-text strong {
+      font-size: 0.95rem;
+      letter-spacing: 1px;
       font-weight: 800;
       color: var(--primary);
+    }
+
+    body.dark-mode .brand-text strong {
+      color: #9bf0a8;
+    }
+
+    .brand-text span {
+      font-size: 0.70rem;
+      opacity: 0.75;
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mini-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.75rem;
+      color: #fff;
+      background: linear-gradient(90deg, #25D366, #18a957);
+      box-shadow: 0 12px 20px rgba(37,211,102,.18);
+      transition: transform .2s ease, box-shadow .2s ease;
+      white-space: nowrap;
+    }
+    .mini-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 26px rgba(37,211,102,.24);
     }
 
     /* Carrossel */
@@ -65,14 +213,12 @@
       width: 100%;
       height: 450px;
       overflow: hidden;
-      margin-top: 80px;
+      margin-top: calc(var(--topbar-h) + var(--nav-h)); /* remove o “espaço sobrando” */
     }
+
     .slide {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       opacity: 0;
       transform: scale(1.1);
       transition: all 1.2s ease-in-out;
@@ -81,25 +227,132 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: saturate(1.05);
     }
     .slide.active {
       opacity: 1;
       transform: scale(1);
     }
+
     .carousel-overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 50%;
-      background: linear-gradient(transparent, #f0f2f5);
+      height: 60%;
+      background: linear-gradient(transparent, rgba(240,242,245,0.98));
       z-index: 5;
+      pointer-events: none;
     }
     body.dark-mode .carousel-overlay {
-      background: linear-gradient(transparent, var(--dark-bg));
+      background: linear-gradient(transparent, rgba(15,15,15,0.98));
     }
 
-    /* Container de Produtos - AJUSTADO PARA 2 COLUNAS */
+    /* Hero overlay */
+    .hero {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 22px 12px 18px;
+      pointer-events: none;
+    }
+
+    .hero-card {
+      width: min(1100px, 100%);
+      border-radius: 22px;
+      padding: 16px 14px;
+      background: rgba(255,255,255,0.70);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: var(--shadow-soft);
+      pointer-events: auto;
+    }
+    body.dark-mode .hero-card {
+      background: rgba(20,20,20,0.58);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .hero-copy h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-copy p {
+      margin: 6px 0 0;
+      font-size: 0.78rem;
+      opacity: 0.82;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      font-size: 0.70rem;
+      font-weight: 800;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.06);
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    body.dark-mode .pill { background: rgba(255,255,255,0.08); }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 0.78rem;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      border: 1px solid rgba(0,0,0,0.07);
+      background: rgba(255,255,255,0.55);
+      color: inherit;
+    }
+    body.dark-mode .cta-btn { border: 1px solid rgba(255,255,255,0.10); background: rgba(0,0,0,0.22); }
+
+    .cta-btn.primary {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+      border: none;
+      box-shadow: 0 16px 24px rgba(76,175,80,0.20);
+    }
+
+    .cta-btn:hover { transform: translateY(-1px); }
+    .cta-btn.primary:hover { box-shadow: 0 18px 28px rgba(76,175,80,0.28); }
+
+    /* Container geral */
     .container {
       width: 98%;
       max-width: 1200px;
@@ -107,73 +360,147 @@
       padding: 20px 5px;
     }
 
+    /* Barra de busca/sort */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0 14px;
+    }
+
+    .searchbox {
+      flex: 1 1 260px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 10px 12px;
+      backdrop-filter: blur(8px);
+    }
+    body.dark-mode .searchbox {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .searchbox i { opacity: .65; }
+    .searchbox input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .searchbox input::placeholder { opacity: .6; }
+
+    .sortbox {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 10px 12px;
+      backdrop-filter: blur(8px);
+    }
+    body.dark-mode .sortbox {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .sortbox label {
+      font-size: 0.74rem;
+      font-weight: 900;
+      opacity: .85;
+      white-space: nowrap;
+    }
+    .sortbox select {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    /* Produtos - 2 colunas */
     .products {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Força 2 colunas */
-      gap: 12px; /* Espaçamento menor para caber melhor */
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     .product {
       background: var(--card-light);
       backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.35);
       border-radius: 15px;
-      padding: 15px 10px; /* Padding reduzido */
+      padding: 15px 10px;
       text-align: center;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow .35s ease, opacity .5s ease;
       position: relative;
       opacity: 0;
       transform: translateY(40px);
+      overflow: hidden;
     }
-
     body.dark-mode .product {
       background: var(--card-dark);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .product.visible { opacity: 1; transform: translateY(0); }
 
     .product:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.15);
     }
 
     .product img {
       max-width: 100%;
       border-radius: 10px;
       transition: 0.3s;
+      transform: translateZ(0);
     }
 
     .product h2 {
-      font-size: 0.9rem; /* Título menor para caber em 2 colunas */
+      font-size: 0.9rem;
       margin: 10px 0;
       min-height: 35px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: 900;
+      letter-spacing: .2px;
     }
 
-    /* Badge Estilizado */
+    /* Badge */
     .badge {
       position: absolute;
-      top: -5px;
+      top: 10px;
       right: 10px;
-      padding: 4px 10px;
-      border-radius: 50px;
+      padding: 6px 10px;
+      border-radius: 999px;
       font-size: 0.6rem;
-      font-weight: 700;
+      font-weight: 900;
       text-transform: uppercase;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
       z-index: 10;
     }
-    .badge.popular { background: linear-gradient(45deg, #ff9800, #f44336); color: white; }
-    .badge.promo { background: linear-gradient(45deg, #e91e63, #9c27b0); color: white; }
-    .badge.new { background: linear-gradient(45deg, #2196f3, #00bcd4); color: white; }
+    .badge.popular { background: linear-gradient(45deg, #ff9800, #f44336); color: #fff; }
+    .badge.promo { background: linear-gradient(45deg, #e91e63, #9c27b0); color: #fff; }
+    .badge.new { background: linear-gradient(45deg, #2196f3, #00bcd4); color: #fff; }
+    .badge.blank { background: linear-gradient(45deg, #9e9e9e, #607d8b); color: #fff; }
 
     /* Preço e Botão */
     .price {
-      font-size: 1.3rem; /* Preço menor */
-      font-weight: 800;
+      font-size: 1.25rem;
+      font-weight: 900;
       color: var(--primary);
       margin: 10px 0;
       display: flex;
@@ -181,7 +508,7 @@
       justify-content: center;
       gap: 3px;
     }
-    .price span { font-size: 0.7rem; opacity: 0.7; font-weight: 400; }
+    .price span { font-size: 0.7rem; opacity: 0.75; font-weight: 600; }
 
     .btn {
       display: block;
@@ -190,17 +517,41 @@
       color: white;
       padding: 10px 5px;
       text-decoration: none;
-      font-weight: 700;
-      font-size: 0.75rem; /* Botão menor */
-      border-radius: 8px;
+      font-weight: 900;
+      font-size: 0.75rem;
+      border-radius: 10px;
       transition: 0.5s;
       box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
       animation: neonPulse 2s infinite;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ripple */
+    .btn::after{
+      content:"";
+      position:absolute;
+      inset:auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.5);
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .btn.ripple::after{
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%) scale(18);
+      opacity: 0;
+      transition: transform .6s ease, opacity .8s ease;
     }
 
     @keyframes neonPulse {
       0% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.4); }
-      50% { box-shadow: 0 0 15px rgba(76, 175, 80, 0.7); }
+      50% { box-shadow: 0 0 15px rgba(76, 175, 80, 0.75); }
       100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.4); }
     }
 
@@ -209,54 +560,65 @@
       transform: scale(1.02);
     }
 
-    .blink-text {
-      animation: blink 1.5s infinite;
-    }
+    .blink-text { animation: blink 1.5s infinite; }
 
     @keyframes blink {
       0% { opacity: 1; }
-      50% { opacity: 0.8; }
+      50% { opacity: 0.85; }
       100% { opacity: 1; }
     }
 
     /* Contador e Urgência */
     #countdown {
-      font-weight: 600;
+      font-weight: 800;
       color: #e91e63;
-      font-size: 0.65rem;
+      font-size: 0.70rem;
       margin-bottom: 5px;
     }
+
     .live-viewers {
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       color: #666;
       margin-top: 8px;
+      font-weight: 700;
+      opacity: .9;
     }
     body.dark-mode .live-viewers { color: #aaa; }
 
-    /* Garantia Section */
+    /* Garantia */
     .garantia {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin: 40px 0;
-      background: rgba(255,255,255,0.5);
+      margin: 36px 0;
+      background: rgba(255,255,255,0.55);
       padding: 20px 10px;
       border-radius: 20px;
       text-align: center;
+      border: 1px solid rgba(0,0,0,0.06);
+      backdrop-filter: blur(10px);
     }
-    body.dark-mode .garantia { background: rgba(255,255,255,0.03); }
-    .garantia div i { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
-    .garantia h3 { font-size: 0.8rem; margin: 5px 0; }
-    .garantia p { font-size: 0.7rem; margin: 0; }
+    body.dark-mode .garantia {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .garantia div i { font-size: 1.6rem; margin-bottom: 10px; color: var(--primary); }
+    .garantia h3 { font-size: 0.82rem; margin: 5px 0; font-weight: 900; }
+    .garantia p { font-size: 0.72rem; margin: 0; opacity: .85; font-weight: 700; }
 
-    /* FAQ Accordion */
+    /* FAQ */
+    .faq h2 { text-align:center; margin-bottom: 18px; font-size: 1.15rem; font-weight: 900; }
+
     .faq-item {
       background: white;
       margin-bottom: 10px;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.06);
     }
-    body.dark-mode .faq-item { background: #1e1e1e; }
+    body.dark-mode .faq-item { background: #1e1e1e; border: 1px solid rgba(255,255,255,0.06); box-shadow: none; }
+
     .faq-item h3 {
       padding: 15px;
       margin: 0;
@@ -265,19 +627,23 @@
       justify-content: space-between;
       align-items: center;
       font-size: 0.9rem;
+      font-weight: 900;
     }
     .faq-item p {
       padding: 0 15px 15px;
       display: none;
       font-size: 0.85rem;
-      line-height: 1.5;
+      line-height: 1.55;
+      margin: 0;
+      opacity: .95;
+      font-weight: 650;
     }
 
     /* Floating Buttons */
     .whatsapp-float {
       position: fixed; left: 15px; bottom: 15px;
       background: #25D366; color: white; padding: 10px 18px;
-      border-radius: 50px; text-decoration: none; font-weight: 700;
+      border-radius: 50px; text-decoration: none; font-weight: 900;
       font-size: 0.8rem;
       box-shadow: 0 0 15px rgba(37, 211, 102, 0.6); z-index: 1000;
       display: flex; align-items: center; gap: 8px;
@@ -286,79 +652,426 @@
 
     @keyframes neonPulseGreen {
       0% { box-shadow: 0 0 5px rgba(37, 211, 102, 0.4); }
-      50% { box-shadow: 0 0 15px rgba(37, 211, 102, 0.8); }
+      50% { box-shadow: 0 0 15px rgba(37, 211, 102, 0.85); }
       100% { box-shadow: 0 0 5px rgba(37, 211, 102, 0.4); }
     }
 
     #darkModeToggle {
-      position: fixed; top: 70px; right: 15px;
+      position: fixed;
+      top: calc(var(--topbar-h) + 10px);
+      right: 15px;
       background: var(--accent); color: white; border: none;
-      width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-      z-index: 1100;
-    }
-    #backToTop {
-      position: fixed; bottom: 15px; right: 15px; display: none;
-      background: #333; color: white; width: 40px; height: 40px;
-      border-radius: 50%; border: none; cursor: pointer; z-index: 1000;
+      width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+      z-index: 4100;
+      box-shadow: 0 12px 18px rgba(0,0,0,0.15);
+      display: grid;
+      place-items: center;
     }
 
+    #backToTop {
+      position: fixed; bottom: 15px; right: 15px; display: none;
+      background: #333; color: white; width: 42px; height: 42px;
+      border-radius: 50%; border: none; cursor: pointer; z-index: 1000;
+      box-shadow: 0 12px 18px rgba(0,0,0,0.18);
+    }
+
+    /* Social proof toast */
+    .toast {
+      position: fixed;
+      left: 15px;
+      bottom: 78px;
+      z-index: 1200;
+      width: min(360px, calc(100% - 30px));
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 16px 28px rgba(0,0,0,0.12);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1a1a1a;
+    }
+    body.dark-mode .toast {
+      background: rgba(15,15,15,0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(0,0,0,0.35);
+    }
+    .toast i { color: var(--primary); font-size: 1rem; }
+    .toast small { display:block; opacity:.75; font-weight: 700; margin-top: 2px; }
+
+
+
+    /* Faixa de cupom */
+    .coupon-bar {
+      margin: 8px auto 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(0,123,255,0.10));
+      border: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    body.dark-mode .coupon-bar {
+      background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(0,123,255,0.12));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .coupon-copy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: .8rem;
+      font-weight: 800;
+    }
+    .coupon-code {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.8);
+      border: 1px dashed rgba(0,0,0,0.18);
+      letter-spacing: 1px;
+    }
+    body.dark-mode .coupon-code {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .copy-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .copy-btn:hover { transform: translateY(-1px); }
+
+    /* Modal de produto */
+    .quick-view-btn {
+      margin-top: 8px;
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: transparent;
+      color: inherit;
+      padding: 9px 6px;
+      border-radius: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: .74rem;
+    }
+    body.dark-mode .quick-view-btn { border-color: rgba(255,255,255,0.1); }
+
+    .product-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      z-index: 6000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .product-modal.open { display: flex; }
+    .product-modal-card {
+      width: min(460px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: rgba(255,255,255,.96);
+      color: #1a1a1a;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.2);
+      position: relative;
+    }
+    body.dark-mode .product-modal-card {
+      background: rgba(20,20,20,.98);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .product-modal-card img {
+      width: 100%;
+      border-radius: 16px;
+      margin-bottom: 14px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(0,0,0,.08);
+      color: inherit;
+      cursor: pointer;
+    }
+    body.dark-mode .modal-close { background: rgba(255,255,255,.08); }
+    .modal-features {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+      font-size: .84rem;
+      font-weight: 700;
+      opacity: .9;
+    }
+
+    /* Depoimentos */
+    .testimonials {
+      margin: 10px auto 34px;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 14px;
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+    .testimonial-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .testimonial {
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    }
+    body.dark-mode .testimonial {
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.08);
+      box-shadow: none;
+    }
+    .stars { color: #ffb400; margin-bottom: 8px; }
+    .testimonial p { margin: 0 0 10px; font-size: .8rem; line-height: 1.5; font-weight: 700; opacity: .92; }
+    .testimonial strong { font-size: .76rem; }
+
+    /* Popup de captura */
+    .capture-popup {
+      position: fixed;
+      right: 15px;
+      bottom: 72px;
+      z-index: 3500;
+      width: min(360px, calc(100% - 30px));
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      box-shadow: 0 18px 34px rgba(0,0,0,.16);
+      padding: 14px;
+      display: none;
+    }
+    body.dark-mode .capture-popup {
+      background: rgba(18,18,18,.98);
+      border-color: rgba(255,255,255,.08);
+    }
+    .capture-popup.show { display: block; }
+    .capture-popup h4 { margin: 0 0 6px; font-size: .92rem; }
+    .capture-popup p { margin: 0 0 12px; font-size: .76rem; line-height: 1.45; opacity: .85; font-weight: 700; }
+    .capture-actions { display: flex; gap: 8px; }
+    .capture-actions a, .capture-actions button {
+      flex: 1;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 10px;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    .capture-actions a { background: #25D366; color: #fff; }
+    .capture-actions button { background: rgba(0,0,0,.06); color: inherit; }
+    body.dark-mode .capture-actions button { background: rgba(255,255,255,.08); }
+
+    footer {
+      background: #000;
+      color: #777;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.72rem;
+    }
+
+    /* Responsivo */
     @media (max-width: 480px) {
-      .carousel { height: 220px; }
-      .garantia { grid-template-columns: 1fr; gap: 20px; }
+      .carousel { height: 240px; }
+      .garantia { grid-template-columns: 1fr; gap: 16px; }
+      .hero-copy h2 { font-size: 1.0rem; }
+      .hero-card { padding: 14px 12px; }
+      .mini-cta { display:none; } /* no mobile, fica mais clean (já tem botão flutuante) */
+      .testimonial-track { grid-template-columns: 1fr; }
+      .capture-popup { bottom: 84px; }
     }
   </style>
 </head>
+
 <body>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <div class="topbar" id="topbar">
+    <span class="dot"></span>
+    <span>Entrega local em Araguanã • Pagamento no Pix/Cartão • Suporte WhatsApp</span>
+    <button class="close-topbar" id="closeTopbar" aria-label="Fechar aviso"><i class="fas fa-xmark"></i></button>
+  </div>
 
   <nav id="navbar">
-    <h1></h1>
+    <div class="nav-inner">
+      <a class="brand" href="#produtos" aria-label="Ir para produtos">
+        <div class="brand-badge"><i class="fas fa-bolt"></i></div>
+        <div class="brand-text">
+          <strong>CM IMPORTS</strong>
+          <span>Variedades • Ofertas do dia</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <a class="mini-cta" target="_blank"
+           href="https://wa.me/559885037911?text=Olá!%20Quero%20tirar%20uma%20dúvida%20sobre%20os%20produtos%20da%20loja.">
+          <i class="fab fa-whatsapp"></i> Chamar no Whats
+        </a>
+      </div>
+    </div>
   </nav>
 
   <div class="carousel">
-    <div class="slide active"><img src="1772716110539.jpg" alt="Banner 1"></div>
-    <div class="slide"><img src="1772716180266.jpg" alt="Banner 2"></div>
-    <div class="slide"><img src="1772716356121.jpg" alt="Banner 3"></div>
-    <div class="slide"><img src="1772716765263.jpg" alt="Banner 4"></div>
+    <div class="slide active"><img loading="eager" src="1772716110539.jpg" alt="Banner 1"></div>
+    <div class="slide"><img loading="lazy" src="1772716180266.jpg" alt="Banner 2"></div>
+    <div class="slide"><img loading="lazy" src="1772716356121.jpg" alt="Banner 3"></div>
+    <div class="slide"><img loading="lazy" src="1772716765263.jpg" alt="Banner 4"></div>
+
     <div class="carousel-overlay"></div>
+
+    <div class="hero">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div class="hero-copy">
+            <h2>Ofertas reais + entrega local em Araguanã</h2>
+            <p>Escolha seu fone, clique em <b>COMPRAR</b> e finalize rapidinho pelo WhatsApp.</p>
+          </div>
+          <div class="hero-badges">
+            <span class="pill"><i class="fas fa-shield-check"></i> 30 dias de garantia</span>
+            <span class="pill"><i class="fas fa-truck-fast"></i> Entrega local</span>
+            <span class="pill"><i class="fas fa-bolt"></i> Resposta rápida</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="cta-btn primary" href="#produtos"><i class="fas fa-tags"></i> Ver ofertas</a>
+          <a class="cta-btn" target="_blank"
+             href="https://wa.me/559885037911?text=Olá!%20Quero%20comprar%20um%20fone%20e%20preciso%20de%20ajuda%20pra%20escolher.">
+            <i class="fab fa-whatsapp"></i> Falar no Whats
+          </a>
+          <a class="cta-btn" href="#duvidas"><i class="fas fa-circle-question"></i> Dúvidas frequentes</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="container">
-    <div class="products">
-      
-      <div class="product">
-        <span class="badge popular">Top 1</span>
-        <img src="8e62ce8b0b67d508a0ed81b79bc95835.jpg" alt="XT53">
-        <h2>Lenovo XT53 Wireless Bluetooth </h2>
-        <div class="price"><span>R$</span> 98,90</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20fone%20Lenovo%20XT53.%20Pode%20me%20passar%20mais%20informações?" class="btn blink-text" target="_blank">COMPRAR</a>
-        <p class="live-viewers"><i class="fas fa-eye"></i> 18 vendo</p>
+  <div class="container" id="produtos">
+    <div class="toolbar">
+      <div class="searchbox">
+        <i class="fas fa-magnifying-glass"></i>
+        <input id="searchInput" type="text" placeholder="Buscar produto (ex: Lenovo, gamer, bluetooth...)" autocomplete="off">
       </div>
 
-      <div class="product">
+      <div class="sortbox">
+        <label for="sortSelect"><i class="fas fa-arrow-down-wide-short"></i> Ordenar</label>
+        <select id="sortSelect">
+          <option value="featured">Destaques</option>
+          <option value="price-asc">Menor preço</option>
+          <option value="price-desc">Maior preço</option>
+          <option value="name-asc">A–Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="coupon-bar">
+      <div class="coupon-copy">
+        <span><i class="fas fa-ticket"></i> Cupom relâmpago:</span>
+        <span class="coupon-code" id="couponCode">CM10</span>
+        <small>copie e envie no WhatsApp</small>
+      </div>
+      <button class="copy-btn" id="copyCouponBtn"><i class="fas fa-copy"></i> Copiar cupom</button>
+    </div>
+
+    <div class="products" id="productsGrid">
+
+      <div class="product" data-featured="1" data-name="Lenovo XT53 Wireless Bluetooth" data-price="98.90" data-desc="Fone sem fio com visual premium, boa autonomia e conexão rápida para uso diário." data-features="Bluetooth estável|Estojo de recarga|Som limpo e confortável">
+        <span class="badge popular">Top 1</span>
+        <img loading="lazy" src="8e62ce8b0b67d508a0ed81b79bc95 835.jpg" alt="XT53">
+        <h2>Lenovo XT53 Wireless Bluetooth</h2>
+        <div class="price"><span>R$</span> 98,90</div>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20fone%20Lenovo%20XT53.%20Pode%20me%20passar%20mais%20informações?"
+           class="btn blink-text" target="_blank">COMPRAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">18</span> vendo</p>
+      </div>
+      
+      <div class="product" data-featured="2" data-name="QKZ AK6 Original gamer" data-price="45.00" data-desc="Modelo com pegada gamer, encaixe firme e ótimo custo-benefício para jogos e música." data-features="Perfil gamer|Boa vedação|Promoção especial">
         <span class="badge promo">OFERTA</span>
-        <img src="575ab29f65f741b192b8c9f21efeb790.jpg" alt="QKZ AK6">
+        <img loading="lazy" src="575ab29f65f741b192b8c9f21efeb790.jpg" alt="QKZ AK6">
         <h2>Qkz Ak6 Original gamer</h2>
         <div id="countdown">--:--:--</div>
         <div class="price"><span>R$</span> 45,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Tenho%20interesse%20no%20fone%20QKZ%20AK6%20Gamer%20da%20promoção." class="btn blink-text" target="_blank">APROVEITAR</a>
-        <p class="live-viewers"><i class="fas fa-eye"></i> 8 vendo</p>
+        <a href="https://wa.me/559885037911?text=Olá!%20Tenho%20interesse%20no%20fone%20QKZ%20AK6%20Gamer%20da%20promoção."
+           class="btn blink-text" target="_blank">APROVEITAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">8</span> vendo</p>
       </div>
 
-      <div class="product">
+      <div class="product" data-featured="3" data-name="Fone M90 Pro Bluetooth" data-price="45.00" data-desc="Visual moderno com base carregadora, ideal para chamadas e uso no dia a dia." data-features="Bluetooth|Base com carga|Design moderno">
         <span class="badge new">Promo</span>
-        <img src="185384ce8730d65b9940a8da713212bf.jpg" alt="M90 PRO">
+        <img loading="lazy" src="185384ce8730d65b9940a8da713212bf.jpg" alt="M90 PRO">
         <h2>Fone M90 Pro Bluetooth</h2>
         <div class="price"><span>R$</span> 45,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20adquirir%20o%20Fone%20M90%20Pro%20Bluetooth." class="btn blink-text" target="_blank">COMPRAR</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20adquirir%20o%20Fone%20M90%20Pro%20Bluetooth."
+           class="btn blink-text" target="_blank">COMPRAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">12</span> vendo</p>
       </div>
 
-      <div class="product">
+      <div class="product" data-featured="4" data-name="M25 Pro Sem Fio Bluetooth 5.3" data-price="40.00" data-desc="Opção econômica e atualizada com Bluetooth 5.3, boa para rotina e chamadas." data-features="Bluetooth 5.3|Leve e prático|Preço acessível">
         <span class="badge new">Novo</span>
-        <img src="b6eb81c9cff8ae1cd6f280eaf267123f.jpg" alt="M25 PRO">
+        <img loading="lazy" src="b6eb81c9cff8ae1cd6f280eaf267123f.jpg" alt="M25 PRO">
         <h2>M25 Pro Sem Fio Bluetooth 5.3</h2>
         <div class="price"><span>R$</span> 40,00</div>
-        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20M25%20Pro%20Sem%20Fio." class="btn blink-text" target="_blank">COMPRAR</a>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20M25%20Pro%20Sem%20Fio."
+           class="btn blink-text" target="_blank">COMPRAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">10</span> vendo</p>
       </div>
+
+      <div class="product" data-featured="5" data-name="Máquina De Cortar Cabelo Design dragão" data-price="25.00" data-desc="A Máquina de Corte Profissional Dragon T9 oferece cortes precisos, suaves e sem puxar os fios. Possui lâmina de aço de alta qualidade, bateria recarregável de longa duração e design ergonômico para melhor controle no uso. Ideal para cortes, acabamentos e detalhes na barba e cabelo, sendo perfeita tanto para uso profissional quanto doméstico." data-features="Lâmina de aço inoxidável de alta precisão para cortes suaves e detalhados.|Bateria recarregável com longa duração e carregamento USB.|Acompanha pentes de diferentes tamanhos para vários estilos de corte.">
+        <span class="badge new">Em breve</span>
+        <img loading="lazy" src="c6d1529ac4630a6c5cb20c3127301d36.jpg" alt="Produto 5">
+        <h2>Máquina De Cortar Cabelo Design dragão</h2>
+        <div class="price"><span>R$</span> 25,00</div>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20Máquina De Cortar Cabelo."
+           class="btn blink-text" target="_blank">COMPRAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">5</span> vendo</p>
+      </div>
+      <div class="product" data-featured="6" data-name=" Lenovo Gm2 Pro Original" data-price="90.00" data-desc="O Fone GM2 Pro oferece som potente, conexão Bluetooth estável e baixa latência para jogos e músicas. Compacto e confortável, possui bateria de longa duração e estojo de carregamento portátil, garantindo praticidade no dia a dia." data-features="Bluetooth 5.3 (conexão rápida)|Modo gamer com baixa latência|Bateria longa com estojo de carga">
+        <span class="badge new">Novo</span>
+        <img loading="lazy" src="cfab4206697c509e624e587970bfed61.jpg alt="Produto 6">
+        <h2>Fone Lenovo Gm2 Pro Original</h2>
+        <div class="price"><span>R$</span> 90,00</div>
+        <a href="https://wa.me/559885037911?text=Olá!%20Gostaria%20de%20comprar%20o%20Fone gm2 Pro."
+           class="btn blink-text" target="_blank">COMPRAR</a>
+        <button class="quick-view-btn" type="button">Ver detalhes</button>
+        <p class="live-viewers"><i class="fas fa-eye"></i> <span class="viewer-count">3</span> vendo</p>
+      </div>
+      </div>
+
+    <div id="noResults" style="display:none; text-align:center; padding: 18px 8px; opacity:.85; font-weight:800;">
+      Nenhum produto encontrado. Tente outro termo 🙂
     </div>
   </div>
 
@@ -368,40 +1081,104 @@
     <div><i class="fas fa-headset"></i><h3>VIP</h3><p>Suporte Whats</p></div>
   </div>
 
-  <div class="container faq">
-    <h2 style="text-align: center; margin-bottom: 30px; font-size: 1.2rem;">Dúvidas Frequentes</h2>
+  <div class="container testimonials">
+    <h2 class="section-title">Quem compra, recomenda</h2>
+    <div class="testimonial-track">
+      <div class="testimonial">
+        <div class="stars"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></div>
+        <p>"Atendimento rápido e o fone chegou certinho. Qualidade muito boa pelo preço."</p>
+        <strong>— Cliente via WhatsApp</strong>
+      </div>
+      <div class="testimonial">
+        <div class="stars"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></div>
+        <p>"Gostei porque foi simples: escolhi, chamei no Whats e recebi sem complicação."</p>
+        <strong>— Compra local</strong>
+      </div>
+      <div class="testimonial">
+        <div class="stars"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></div>
+        <p>"Visual bonito da loja e suporte rápido. Passa mais confiança pra comprar."</p>
+        <strong>— Cliente satisfeito</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="container faq" id="duvidas">
+    <h2>Dúvidas Frequentes</h2>
+
     <div class="faq-item">
       <h3>Como recebo meu produto? <i class="fas fa-chevron-down"></i></h3>
       <p>Fazemos a entrega diretamente na sua residência para quem mora em Araguanã-MA! Basta combinar o melhor horário via WhatsApp.</p>
     </div>
+
     <div class="faq-item">
       <h3>Os fones possuem garantia? <i class="fas fa-chevron-down"></i></h3>
       <p>Sim! Todos os nossos produtos possuem garantia de 30 dias contra qualquer defeito de fabricação, garantindo total segurança para você.</p>
     </div>
+
     <div class="faq-item">
       <h3>Quais as formas de pagamento? <i class="fas fa-chevron-down"></i></h3>
       <p>Aceitamos PIX, cartões de crédito e pagamento em dinheiro no ato da entrega em Araguanã.</p>
     </div>
   </div>
 
-  <footer style="background: #000; color: #666; padding: 30px 20px; text-align: center; font-size: 0.7rem;">
+  <footer>
     <p>© 2025 CM IMPORTS VARIEDADES</p>
   </footer>
 
   <a href="https://wa.me/559885037911" class="whatsapp-float" target="_blank">
     <i class="fab fa-whatsapp"></i> SUPORTE
   </a>
-  
+
   <button id="darkModeToggle" title="Tema"><i class="fas fa-moon"></i></button>
-  <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
+  <button id="backToTop" title="Voltar ao topo"><i class="fas fa-arrow-up"></i></button>
+
+  <div class="toast" id="toast">
+    <i class="fas fa-circle-check"></i>
+    <div>
+      <div id="toastTitle">Pedido confirmado!</div>
+      <small id="toastSubtitle">Agora mesmo</small>
+    </div>
+  </div>
+
+  <div class="capture-popup" id="capturePopup">
+    <h4>Receba as melhores ofertas no WhatsApp</h4>
+    <p>Chame agora e peça a lista atualizada com promoções, disponibilidade e condições de entrega.</p>
+    <div class="capture-actions">
+      <a target="_blank" href="https://wa.me/559885037911?text=Olá!%20Quero%20receber%20a%20lista%20de%20ofertas%20atualizada.">Quero receber</a>
+      <button type="button" id="closeCapturePopup">Agora não</button>
+    </div>
+  </div>
+
+  <div class="product-modal" id="productModal" aria-hidden="true">
+    <div class="product-modal-card">
+      <button class="modal-close" id="closeProductModal" type="button" aria-label="Fechar"><i class="fas fa-xmark"></i></button>
+      <img id="modalImage" src="" alt="Produto">
+      <h3 id="modalTitle" style="margin:0 0 8px; font-size:1rem;"></h3>
+      <div id="modalPrice" class="price" style="justify-content:flex-start; margin:0 0 8px;"></div>
+      <p id="modalDesc" style="margin:0; line-height:1.55; font-size:.84rem; font-weight:700; opacity:.9;"></p>
+      <div id="modalFeatures" class="modal-features"></div>
+      <a id="modalBuy" href="#" target="_blank" class="btn blink-text">COMPRAR AGORA</a>
+    </div>
+  </div>
 
   <script>
-    // Navbar Scroll
+    // Navbar + BackToTop + Progress
     window.addEventListener('scroll', () => {
       const nav = document.getElementById('navbar');
       nav.classList.toggle('scrolled', window.scrollY > 50);
-      document.getElementById('backToTop').style.display = window.scrollY > 400 ? 'block' : 'none';
+
+      const btt = document.getElementById('backToTop');
+      btt.style.display = window.scrollY > 400 ? 'grid' : 'none';
+
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('scrollProgress').style.width = pct + '%';
     });
+
+    // Back to top
+    document.getElementById('backToTop').onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
 
     // FAQ Accordion
     document.querySelectorAll('.faq-item h3').forEach(item => {
@@ -409,8 +1186,10 @@
         const p = item.nextElementSibling;
         const icon = item.querySelector('i');
         const isOpen = p.style.display === 'block';
+
         document.querySelectorAll('.faq-item p').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.faq-item i').forEach(el => el.style.transform = 'rotate(0deg)');
+
         if (!isOpen) {
           p.style.display = 'block';
           icon.style.transform = 'rotate(180deg)';
@@ -435,15 +1214,26 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.product').forEach(p => observer.observe(p));
 
-    // Dark Mode
+    // Dark Mode com memória
     const btnDark = document.getElementById('darkModeToggle');
-    btnDark.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
+    function applyTheme(isDark){
+      document.body.classList.toggle('dark-mode', isDark);
       btnDark.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+      applyTheme(storedTheme === 'dark');
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(!!prefersDark);
+    }
+    btnDark.addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('dark-mode');
+      applyTheme(isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-    // Countdown
+    // Countdown (mantido)
     function startCountdown(duration) {
       let timer = duration, hours, minutes, seconds;
       setInterval(() => {
@@ -451,14 +1241,218 @@
         minutes = parseInt((timer % 3600) / 60, 10);
         seconds = parseInt(timer % 60, 10);
         const display = document.getElementById("countdown");
-        if(display) display.innerHTML = `Expira em: ${hours}h ${minutes}m ${seconds}s`;
+        if (display) display.innerHTML = `Expira em: ${hours}h ${minutes}m ${seconds}s`;
         if (--timer < 0) timer = duration;
       }, 1000);
     }
     startCountdown(20530);
 
-    document.getElementById('backToTop').onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+    // Ripple no clique dos botões
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = (e.clientX - rect.left) + 'px';
+        const y = (e.clientY - rect.top) + 'px';
+        btn.style.setProperty('--x', x);
+        btn.style.setProperty('--y', y);
+        btn.classList.remove('ripple');
+        // força reflow
+        void btn.offsetWidth;
+        btn.classList.add('ripple');
+      });
+    });
+
+    // Busca + Ordenação
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const grid = document.getElementById('productsGrid');
+    const noResults = document.getElementById('noResults');
+
+    function getProductsArray() {
+      return Array.from(grid.querySelectorAll('.product'));
+    }
+
+    function normalize(str){
+      return (str || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function applyFilterAndSort(){
+      const q = normalize(searchInput.value.trim());
+      const mode = sortSelect.value;
+
+      const products = getProductsArray();
+
+      // filtro
+      let visibleCount = 0;
+      products.forEach(p => {
+        const name = normalize(p.dataset.name || p.querySelector('h2')?.textContent || '');
+        const show = !q || name.includes(q);
+        p.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+
+      // ordenação (só reordena os visíveis, mantendo layout)
+      const visible = products.filter(p => p.style.display !== 'none');
+
+      visible.sort((a, b) => {
+        const priceA = parseFloat(a.dataset.price || '0');
+        const priceB = parseFloat(b.dataset.price || '0');
+        const nameA = (a.dataset.name || '').toLowerCase();
+        const nameB = (b.dataset.name || '').toLowerCase();
+        const featA = parseInt(a.dataset.featured || '999', 10);
+        const featB = parseInt(b.dataset.featured || '999', 10);
+
+        if (mode === 'featured') return featA - featB;
+        if (mode === 'price-asc') return priceA - priceB;
+        if (mode === 'price-desc') return priceB - priceA;
+        if (mode === 'name-asc') return nameA.localeCompare(nameB);
+        return 0;
+      });
+
+      // aplica nova ordem (apenas os visíveis, mas preserva todos no grid)
+      visible.forEach(p => grid.appendChild(p));
+      // e recoloca os ocultos no final (sem impacto visual)
+      products.filter(p => p.style.display === 'none').forEach(p => grid.appendChild(p));
+    }
+
+    searchInput.addEventListener('input', applyFilterAndSort);
+    sortSelect.addEventListener('change', applyFilterAndSort);
+
+    // Random “vendo agora”
+    function bumpViewers(){
+      document.querySelectorAll('.viewer-count').forEach(el => {
+        const base = parseInt(el.textContent || '10', 10);
+        const delta = Math.floor(Math.random() * 3) - 1; // -1,0,1
+        const next = Math.max(3, base + delta);
+        el.textContent = next;
+      });
+    }
+    setInterval(bumpViewers, 3500);
+
+    // Social proof toast
+    const toast = document.getElementById('toast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastSubtitle = document.getElementById('toastSubtitle');
+
+    const events = [
+      { title: 'Alguém garantiu o QKZ AK6', sub: 'há poucos instantes' },
+      { title: 'Pedido no WhatsApp enviado', sub: 'agora mesmo' },
+      { title: 'Oferta salva no Pix', sub: 'há 1 minuto' },
+      { title: 'Compra confirmada', sub: 'há poucos instantes' }
+    ];
+
+    function showToast(){
+      const pick = events[Math.floor(Math.random() * events.length)];
+      toastTitle.textContent = pick.title;
+      toastSubtitle.textContent = pick.sub;
+      toast.style.display = 'flex';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(8px)';
+      requestAnimationFrame(() => {
+        toast.style.transition = 'opacity .25s ease, transform .25s ease';
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+      });
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(() => { toast.style.display = 'none'; }, 260);
+      }, 3200);
+    }
+    setTimeout(showToast, 4500);
+    setInterval(showToast, 12000);
+
+    // Fechar topbar (e ajustar layout)
+    const topbar = document.getElementById('topbar');
+    document.getElementById('closeTopbar').addEventListener('click', () => {
+      topbar.style.display = 'none';
+      document.documentElement.style.setProperty('--topbar-h', '0px');
+    });
+
+    // Cupom
+    const copyCouponBtn = document.getElementById('copyCouponBtn');
+    copyCouponBtn.addEventListener('click', async () => {
+      const code = document.getElementById('couponCode').textContent.trim();
+      try {
+        await navigator.clipboard.writeText(code);
+        copyCouponBtn.innerHTML = '<i class="fas fa-check"></i> Cupom copiado';
+      } catch (e) {
+        const temp = document.createElement('input');
+        temp.value = code;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+        copyCouponBtn.innerHTML = '<i class="fas fa-check"></i> Cupom copiado';
+      }
+      setTimeout(() => {
+        copyCouponBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar cupom';
+      }, 2200);
+    });
+
+    // Popup de captura
+    const capturePopup = document.getElementById('capturePopup');
+    const captureClosed = sessionStorage.getItem('captureClosed');
+    if (!captureClosed) {
+      setTimeout(() => capturePopup.classList.add('show'), 6500);
+    }
+    document.getElementById('closeCapturePopup').addEventListener('click', () => {
+      capturePopup.classList.remove('show');
+      sessionStorage.setItem('captureClosed', '1');
+    });
+
+    // Modal de produto
+    const productModal = document.getElementById('productModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalImage = document.getElementById('modalImage');
+    const modalFeatures = document.getElementById('modalFeatures');
+    const modalBuy = document.getElementById('modalBuy');
+
+    document.querySelectorAll('.quick-view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const product = btn.closest('.product');
+        const title = product.dataset.name;
+        const price = product.dataset.price;
+        const desc = product.dataset.desc || '';
+        const features = (product.dataset.features || '').split('|').filter(Boolean);
+        const img = product.querySelector('img');
+        const buy = product.querySelector('.btn');
+
+        modalTitle.textContent = title;
+        modalPrice.innerHTML = `<span>R$</span> ${Number(price).toFixed(2).replace('.', ',')}`;
+        modalDesc.textContent = desc;
+        modalImage.src = img ? img.getAttribute('src') : '';
+        modalImage.alt = title;
+        modalBuy.href = buy ? buy.href : '#';
+        modalFeatures.innerHTML = features.map(item => `<div><i class="fas fa-circle-check"></i> ${item}</div>`).join('');
+        productModal.classList.add('open');
+        productModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeProductModal() {
+      productModal.classList.remove('open');
+      productModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('closeProductModal').addEventListener('click', closeProductModal);
+    productModal.addEventListener('click', (e) => {
+      if (e.target === productModal) closeProductModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && productModal.classList.contains('open')) closeProductModal();
+    });
+
+    // Inicializa ordenação/estado
+    applyFilterAndSort();
   </script>
 </body>
 </html>
-
